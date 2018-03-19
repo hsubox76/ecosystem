@@ -53,17 +53,19 @@ class Big extends React.Component {
         curPix = [point[0] + rayLength * Math.cos(angle), point[1] + rayLength * Math.sin(angle)];
         // this.props.ctx.fillStyle = 'rgba(0, 0, 0, 255)';
         // this.props.ctx.fillRect(curPix[0], curPix[1], 1, 1);
-        const pixData = this.props.ctx.getImageData(curPix[0], curPix[1], 1, 1);
-        const c = pixData.data;
+        const pixData = this.props.ctx.getImageData(curPix[0], curPix[1], 1, 1).data;
         const curCol = COLORS[this.props.index];
-        if ((c[0] || c[1] || c[2]) && (c[0] !== curCol[0] || c[1] !== curCol[1] || c[2] !== curCol[2])) { // if some color
-          // obviously will not store as a string in the short term but maybe a regular array
-          return pixData.data.toString(); // this is what that ray hits
+        if ((pixData[0] || pixData[1] || pixData[2]) && (pixData[0] !== curCol[0] || pixData[1] !== curCol[1] || pixData[2] !== curCol[2])) { // if some color
+          return {
+            distance: rayLength,
+            color: [pixData[0], pixData[1], pixData[2], pixData[3]]
+          }; // this is what that ray hits
         }
       }
-      return '0,0,0,0';
+      return { distance: Infinity, color: [0, 0, 0, 0] };
     });
-    console.log(this.props.index, renderedView);
+    // console.log(this.props.index, renderedView);
+    return renderedView;
     // this.props.ctx.beginPath();
     // this.props.ctx.moveTo(frontEdge[0][0], frontEdge[0][1]);
     // this.props.ctx.lineTo(frontEdge[0][0] + 20 * Math.cos(angle), frontEdge[0][1] + 20 * Math.sin(angle));
@@ -73,12 +75,15 @@ class Big extends React.Component {
   }
   move = () => {
     const { x: cX, y: cY } = this.state.position;
-    const xSpeed = this.state.speed * Math.sin(this.state.angle);
-    const ySpeed = this.state.speed * Math.cos(this.state.angle);
+    const angle = this.state.angle * Math.PI / 180;
+    const xSpeed = this.state.speed * Math.sin(angle);
+    const ySpeed = this.state.speed * Math.cos(angle);
     const nextX = Math.min(cX + xSpeed, 60);
     const nextY = Math.min(cY + ySpeed, 60);
-    if (nextX !== cX || nextY !== cY) {
-      this.calculateView(nextX, nextY, this.state.angle + 1);
+    const view = this.calculateView(nextX, nextY, this.state.angle + 1);
+    const positionChanged = nextX !== cX || nextY !== cY;
+    const viewClear = view.every(pix => pix.distance > 5);
+    if (positionChanged && viewClear) {
       this.setState({
         position: Object.assign({}, this.state.position, {
           x: nextX,
