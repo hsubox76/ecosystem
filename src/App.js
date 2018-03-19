@@ -5,7 +5,7 @@ import Big from './Big';
 // import Wall from './Wall';
 
 const SIZE = 100;
-const MAXFRAME = 80;
+const MAXFRAME = 50;
 
 class App extends Component {
   static propTypes = {
@@ -39,7 +39,7 @@ class App extends Component {
       this.tempAgents = [];
     });
     if (this.state.frame < MAXFRAME) {
-      this.setState({frame: this.state.frame + 1 });
+      this.setState({ frame: this.state.frame + 1 });
       window.requestAnimationFrame(this.step);
     }
   }
@@ -79,8 +79,9 @@ class App extends Component {
         key={num}
         index={num}
         frame={this.state.frame}
-        initialPosition={{ x: 0, y: 5 + num * 12 }}
+        initialPosition={{ x: 10 + num * 15, y: 10 }}
         moveAgent={this.moveAgent}
+        ctx={this.ctx}
       />
     ));
     return (
