@@ -60,6 +60,10 @@ class App extends Component {
   };
   drawPixels = () => {
     this.ctx.clearRect(0, 0, this.props.width, this.props.height);
+    this.ctx.fillRect(0, 0, this.props.width, 1);
+    this.ctx.fillRect(0, this.props.height - 1, this.props.width, 1);
+    this.ctx.fillRect(0, 0, 1, this.props.height);
+    this.ctx.fillRect(this.props.width - 1, 0, 1, this.props.height);
     this.state.agents.forEach(({cX, cY, angle, width, height, color}, index) => {
       this.ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]/255}`;
       this.ctx.save();
@@ -79,7 +83,7 @@ class App extends Component {
         key={num}
         index={num}
         frame={this.state.frame}
-        initialPosition={{ x: 10 + num * 15, y: 10 }}
+        initialPosition={{ x: 10 + num * 15, y: 40 }}
         moveAgent={this.moveAgent}
         ctx={this.ctx}
       />
