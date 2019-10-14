@@ -76,7 +76,7 @@ class App extends Component {
   }
   render() {
     if (!this.ctx) {
-      return <div><canvas id="mainCanvas" /></div>;
+      return <div><canvas id="mainCanvas" /> </div>;
     }
     const bigAgents = [0, 1, 2].map((num) => (
       <Big
